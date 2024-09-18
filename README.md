@@ -59,7 +59,7 @@ Enqueues a new task to be executed sequentially by the Reactor.
 
 Returns an execution object containing the task's promise and ID.
 
-### taskAwait(func, ...args)
+### taskAwait(fn, ...args)
 
 Executes a function directly, handling different types (tasks, async functions, and sync functions).
 
