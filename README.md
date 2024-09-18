@@ -1,56 +1,66 @@
 # Reactor
 
-The Reactor module implements an event loop spanning multiple iterations of the JS event loop. It allows you to sequentially execute async functions in a queue, as well as any async code called by those functions.
+The Reactor module provides a controlled way to execute asynchronous tasks sequentially, preventing race conditions and ensuring that tasks and subtasks do not interleave with other tasks and their subtasks. This is especially useful when multiple ongoing async processes interact with shared resources, such as internal state in a module with multiple async pipelines.
 
 ## Features
 
 - Control the flow of complex asynchronous tasks
-- Prevent simultaneous execution of tasks
-- Sequentialize execution of modules with internal async behavior
+- Prevent simultaneous execution of tasks to avoid race conditions
+- Maintain a clear execution order for tasks and async methods
 
 ## Usage
 
-Import the Reactor class and create a new instance:
+### Basic Example
+
+In this example, `task1` uses `reactor.taskAwait` to control the timing of its inner async invocation. The key point is that `task2` will not run until `task1` and its awaited task are fully complete, showcasing how `taskAwait` can be used without directly awaiting itself.
 
 ```javascript
-import Reactor from './Reactor';
+import Reactor from './index.js';
 
 const reactor = new Reactor();
+
+const task1 = async () => {
+  // Perform some asynchronous work
+  reactor.taskAwait(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    console.log('Task 1 complete');
+  });
+};
+
+const task2 = async () => {
+  console.log('Task 2 complete');
+};
+
+// Enqueue the tasks
+reactor.taskAsync(task1);
+reactor.taskAsync(task2);
+
+// Expected Output:
+// Task 1 complete
+// Task 2 complete
 ```
 
-To add a task to the queue, use the `invoke` method:
+Tasks added via taskAsync will be executed sequentially.
 
-```javascript
-reactor.invoke({
-  fn: async () => {
-    // Your async function
-  },
-  timeout: 1000, // Optional: Maximum time in milliseconds that the event is allowed to run
-});
-```
+taskAwait ensures other tasks are blocked until the awaited task and its parent task completes. No other parts of the program are blocked, it only blocks the execution of functions invoked via taskAsync and child tasks attached to that context via taskAwait.
 
-If you want to check if a task is locked, use the makeIsEventLocked method.
-This handles the scenario where you've completed an iteration of the event
-loop and you wish to prevent other asynchronous execution in your code.
+taskAwait doesn't need to be awaited itself. It forwards the return value of the invoked function, which can be awaited using the familiar JS event loop mechanism.
 
-```javascript
-const isEventLocked = reactor.makeIsEventLocked();
+## API Reference
+### taskAsync(fn, timeout = 0)
 
-// Deep inside a module
-if (isEventLocked()) {
-  // Code with resource contentions or race conditions
-}
-```
+Enqueues a new task to be executed sequentially by the Reactor.
 
-To unlock the reactor and run the next task in the queue, use the done method:
+    fn (Function): The asynchronous function to execute.
+    timeout (number, optional): The maximum time (in ms) the task is allowed to run.
 
-```javascript
-reactor.done();
-```
+Returns an execution object containing the task's promise and ID.
 
-To check if the reactor is locked, use the `isLocked` method:
-```javascript:
-if (reactor.isLocked()) {
-  // The reactor is locked
-}
-```
+### taskAwait(func, ...args)
+
+Executes a function directly, handling different types (tasks, async functions, and sync functions).
+
+    func (Function): The function to execute. This can be an async function, a sync function, or a task.
+    ...args (any): Arguments to pass to the function.
+
+Returns a promise representing the outcome of the function execution.
