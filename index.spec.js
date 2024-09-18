@@ -76,7 +76,7 @@ describe('Reactor', () => {
       const callOrder = [];
       const taskA = createTask(async () => {
         callOrder.push('A');
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       });
       const taskB = createTask(async () => {
         callOrder.push('B');
@@ -88,7 +88,7 @@ describe('Reactor', () => {
       const executionB = taskB();
 
       // Fast-forward timers to execute taskA
-      vi.advanceTimersByTime(50);
+      vi.advanceTimersByTime(100);
       await executionA.promise;
 
       // Fast-forward timers to execute taskB
@@ -174,7 +174,7 @@ describe('Reactor', () => {
 
       // Verify that taskA was completed
       expect(taskACompleted).toBe(true);
-    }, 15000);
+    });
   });
 
   describe('Run > Forked function runs independently', () => {
@@ -185,7 +185,7 @@ describe('Reactor', () => {
         await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
-      // Fork function (runs independently, does not await)
+      // Fork function (runs independently, does not block)
       const forkFunction = () => {
         setTimeout(() => {
           forkedCompleted = true;

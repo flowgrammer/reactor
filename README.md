@@ -18,7 +18,7 @@ In standard JavaScript, while individual event loop invocations are isolated, th
 In this example, `task1` uses `reactor.taskAwait` to control the timing of its inner async invocation. The key point is that `task2` will not run until `task1` and its awaited task are fully complete, showcasing how `taskAwait` can be used without directly awaiting itself.
 
 ```javascript
-import Reactor from './index.js';
+import Reactor from '@far-world-labs/reactor';
 
 const reactor = new Reactor();
 
