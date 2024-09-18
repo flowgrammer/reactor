@@ -1,15 +1,15 @@
 # Reactor
 
-The Reactor module manages asynchronous task invocations in highly-reactive environments by isolating chains of related operations with an event loop on top of JS's existing event loop. Unlike simply executing tasks sequentially, Reactor ensures that a single top-level invocation cascading into multiple async operations does not interleave with other tasks and their subtasks. This prevents unintended race conditions and resource corruption when multiple asynchronous processes interact with shared resources or internal state within modules that have multiple async pipelines.
+The Reactor module manages asynchronous task invocations in highly reactive environments by isolating chains of related operations with an event loop built on top of JavaScript's existing event loop. Unlike simpler flow control libraries, Reactor supports complex dataflows, ensuring that a single top-level task cascading into multiple async operations does not interleave with other tasks and their subtasks. This isolation prevents unintended race conditions and resource corruption when multiple asynchronous processes interact with shared resources or internal state within modules that handle multiple async pipelines.
 
-In ordinary JavaScript, while individual event loop invocations are isolated, the interleaving of execution across numerous event loop invocations can lead to unpredictable states because of resource contention over time. Reactor solves this by maintaining a consistent context for each top-level task and its subsequent async operations, preventing them from intermixing with other concurrent processes.
+In standard JavaScript, while individual event loop invocations are isolated, the interleaving of executions across numerous event loop invocations can lead to unpredictable states due to resource contention over time. Reactor addresses this by maintaining a consistent context for each top-level task and its subsequent async operations, preventing them from mixing with other concurrent processes.
 
 ## Features
 
-- **Isolate Asynchronous Chains**: Maintain separate execution contexts for top-level tasks and their async operations.
-- **Prevent Race Conditions**: Ensure that async operations within a task do not interfere with other tasks.
-- **Controlled Execution Flow**: Manage the order and isolation of async tasks to maintain predictable behavior.
-- **Simple API**: Easily integrate Reactor into existing projects with straightforward functions.
+- **Isolate Asynchronous Chains**
+- **Prevent Race Conditions**
+- **Controlled Execution Flow**
+- **Simple API**
 
 ## Usage
 
