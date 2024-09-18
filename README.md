@@ -43,11 +43,11 @@ reactor.taskAsync(task2);
 // Task 2 complete
 ```
 
-Tasks added via taskAsync will be executed sequentially.
+Tasks added via `taskAsync` will be executed sequentially.
 
-taskAwait ensures other tasks are blocked until the awaited task and its parent task completes. No other parts of the program are blocked, it only blocks the execution of functions invoked via taskAsync and child tasks attached to that context via taskAwait.
+`taskAwait` ensures other tasks are blocked until the awaited task and its parent task completes. No other parts of the program are blocked, it only blocks the execution of functions invoked via `taskAsync` and child tasks attached to that context via `taskAwait`.
 
-taskAwait doesn't need to be awaited itself. It forwards the return value of the invoked function, which can be awaited using the familiar JS event loop mechanism.
+`taskAwait` doesn't need to be awaited itself. It forwards the return value of the invoked function, which can be awaited using the familiar approach.
 
 ## API Reference
 ### taskAsync(fn, timeout = 0)
