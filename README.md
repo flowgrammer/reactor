@@ -1,12 +1,15 @@
 # Reactor
 
-The Reactor module provides a controlled way to execute asynchronous tasks sequentially, preventing race conditions and ensuring that tasks and subtasks do not interleave with other tasks and their subtasks. This is especially useful when multiple ongoing async processes interact with shared resources, such as internal state in a module with multiple async pipelines.
+The Reactor module manages asynchronous task invocations in highly-reactive environments by isolating chains of related operations with an event loop on top of JS's existing event loop. Unlike simply executing tasks sequentially, Reactor ensures that a single top-level invocation cascading into multiple async operations does not interleave with other tasks and their subtasks. This prevents unintended race conditions and resource corruption when multiple asynchronous processes interact with shared resources or internal state within modules that have multiple async pipelines.
+
+In ordinary JavaScript, while individual event loop invocations are isolated, the interleaving of execution across numerous event loop invocations can lead to unpredictable states because of resource contention over time. Reactor solves this by maintaining a consistent context for each top-level task and its subsequent async operations, preventing them from intermixing with other concurrent processes.
 
 ## Features
 
-- Control the flow of complex asynchronous tasks
-- Prevent simultaneous execution of tasks to avoid race conditions
-- Maintain a clear execution order for tasks and async methods
+- **Isolate Asynchronous Chains**: Maintain separate execution contexts for top-level tasks and their async operations.
+- **Prevent Race Conditions**: Ensure that async operations within a task do not interfere with other tasks.
+- **Controlled Execution Flow**: Manage the order and isolation of async tasks to maintain predictable behavior.
+- **Simple API**: Easily integrate Reactor into existing projects with straightforward functions.
 
 ## Usage
 
